@@ -1,0 +1,56 @@
+!---General---!
+real(8),parameter :: lx = 20 , ly = 20 ! space period
+integer,parameter :: nx = 256, nx2 = nx/2, nxx = nx-1 ! no of steps
+integer,parameter :: ny = 256, ny2 = ny/2, nyy = ny-1
+
+real(8),parameter :: dx = lx/nx, dy = ly/ny ! space step
+real(8),parameter :: dt = 0.001d0, tmax = 100 ! time step
+integer,parameter :: nmax = tmax/dt, snap = 10 ! maximum iterations
+
+
+real(8),parameter :: pi = 3.1415826358979d0, two_pi = 2*pi
+real(8),parameter :: sqr_2pi = 2.506628274631d0
+integer :: threads = 4
+
+real(8),parameter :: dkx = two_pi/(nx*dx) , dky = two_pi/(ny*dy) ! space step in fourier space
+
+!---Non-linearity---!
+real(8),parameter :: aho = 1.0d-6 !harmonic oscillator unit
+real(8),parameter :: bohr_a = 5.2917720859d-11/aho !bohr radius
+real(8),parameter :: as =  3.769458264d0 * bohr_a ! scattering length
+real(8),parameter :: d_z = 0.1d0 ! axial trap parameter
+real(8),parameter :: natoms = 2000 ! number of atoms
+real(8),parameter :: g2d = 4.0d0 * pi * as * natoms / (sqr_2pi * d_z) !2d nonlinearity
+
+!---GPE---!
+complex(8),parameter :: ci = (0.0d0,1.0d0)
+
+!--Potential---!
+character(len=*),parameter :: potential = 'harmonic' !set potential type based on options below
+logical,parameter :: time_dependent = .false. ! whether potential changes with time
+!----harmonic----!
+real(8),parameter :: gamma = 1.0d0 , nu = 0.5d0 ! harmonic trap oscillator aspect ratio
+real(8),parameter :: gamma2 = gamma*gamma , nu2 = nu*nu 
+!----rotating----!
+real(8),parameter :: ecc = 0.025 ! eccentricity of rotating elliptical trap
+real(8),parameter :: omega = 0.5 ! rotating frequency of trap
+
+!--Initial Conditon--!
+character(len=*),parameter :: init_cond = 'single_vortex' ! set initial conditon type based on options below
+!----single_vortex----!
+integer,parameter :: charge = 1 ! vortex charge for the single_vorte case
+
+!----random_phase----!
+
+
+!--LHY Correction--!
+logical,parameter :: set_lhy = .true. ! enable or disable LHY correction
+
+!--Dipole Interaction--!
+logical,parameter :: setup_dipole = .true. ! enable or disable dipole
+real(8),parameter :: rc = 5 ! condensate radius
+real(8),parameter :: add = 5 * as ! dipolar length
+real(8),parameter :: cdd = add/as ! dipole strength 
+real(8),parameter :: aspi = (as**3/pi)**0.5 
+real(8),parameter :: ldg = 10.66666 * g2d * aspi * (1 + 1.5 * cdd**2)!LHY Dipole correction
+
